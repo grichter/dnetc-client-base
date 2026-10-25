@@ -118,8 +118,17 @@ extern "C" s32 rc5_72_unit_func_ocl_1pipe (RC5_72UnitWork *rc5_72unitwork, u32 *
 extern "C" s32 rc5_72_unit_func_ocl_2pipe (RC5_72UnitWork *rc5_72unitwork, u32 *iterations, void *);
 extern "C" s32 rc5_72_unit_func_ocl_4pipe (RC5_72UnitWork *rc5_72unitwork, u32 *iterations, void *);
 #elif (CLIENT_CPU == CPU_ARM64)
+/* The KS-MONIKA cores are GNU-syntax .S files. MSVC's armasm64 cannot
+   assemble them, so Windows ARM64 builds made with MSVC leave them out;
+   apply_selcore_substitution_rules_rc572() maps their indexes to NEON 8x4,
+   which keeps the core numbering the same as on Linux/macOS. */
+#if defined(_MSC_VER) && !defined(__clang__)
+#define NO_ARM64_MONIKA_CORES
+#endif
+#if !defined(NO_ARM64_MONIKA_CORES)
 extern "C" s32 rc5_72_unit_func_monika_4pipe(RC5_72UnitWork *rc5_72unitwork, u32 *iterations, void *);
 extern "C" s32 rc5_72_unit_func_monika_2pipe(RC5_72UnitWork *rc5_72unitwork, u32 *iterations, void *);
+#endif
 extern "C" s32 rc5_72_unit_func_neon_8x4(RC5_72UnitWork *w, u32 *iterations, void *);
 #endif
 
@@ -345,6 +354,9 @@ int apply_selcore_substitution_rules_rc572(int cindex, int device)
     if (!(flags & CPU_F_AVX2) && cindex == 4)   /* AVX2 core */
       cindex = 3;
   }
+#elif (CLIENT_CPU == CPU_ARM64) && defined(NO_ARM64_MONIKA_CORES)
+  if (cindex == 3 || cindex == 4)   /* KS-MONIKA cores not built (MSVC) */
+    cindex = 5;                     /* NEON 8x4 */
 #elif (CLIENT_CPU == CPU_CUDA)
   // GetProcessorType() currently returns the number of registers
   if (GetProcessorType(1, device) < 256 * 36) {
@@ -1111,6 +1123,7 @@ int selcoreSelectCore_rc572(Client *client, unsigned int threadindex,
      #endif
 
      #if (CLIENT_CPU == CPU_ARM64)
+      #if !defined(NO_ARM64_MONIKA_CORES)
        case 3:
          unit_func.gen_72 = rc5_72_unit_func_monika_4pipe;
          pipeline_count = 4;
@@ -1119,6 +1132,7 @@ int selcoreSelectCore_rc572(Client *client, unsigned int threadindex,
          unit_func.gen_72 = rc5_72_unit_func_monika_2pipe;
          pipeline_count = 2;
          break;
+      #endif
        case 5:
          unit_func.gen_72 = rc5_72_unit_func_neon_8x4;
          pipeline_count = 32;
