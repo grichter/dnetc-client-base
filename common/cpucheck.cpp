@@ -1863,6 +1863,37 @@ static long __GetRawProcessorID(const char **cpuname )
         detectedname = ((const char *)&(namebuf[0]));
       }
   }
+  #elif (CLIENT_OS == OS_WIN64) && (CLIENT_CPU == CPU_ARM64)
+  if ( detectedtype == -2L )
+  {
+    /* Windows on ARM64 publishes MIDR_EL1 as the "CP 4000" value of each
+       CentralProcessor key (same layout as the Linux /proc/cpuinfo id
+       above) and the brand string as ProcessorNameString. */
+    HKEY hkey;
+    detectedtype = -1L;
+    if (RegOpenKeyExA(HKEY_LOCAL_MACHINE,
+          "HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0",
+          0, KEY_READ, &hkey) == ERROR_SUCCESS)
+    {
+      ULONGLONG midr = 0;
+      DWORD type = 0, len = sizeof(midr);
+      if (RegQueryValueExA(hkey, "CP 4000", NULL, &type, (LPBYTE)&midr,
+                           &len) == ERROR_SUCCESS && type == REG_QWORD &&
+          (midr & 0xffffffffUL) != 0)
+        detectedtype = (long)(midr & 0xffffffffUL);
+      len = (DWORD)(sizeof(namebuf) - 1);
+      if (RegQueryValueExA(hkey, "ProcessorNameString", NULL, &type,
+                           (LPBYTE)namebuf, &len) == ERROR_SUCCESS &&
+          type == REG_SZ && len > 1)
+      {
+        namebuf[sizeof(namebuf) - 1] = '\0';
+        detectedname = ((const char *)&(namebuf[0]));
+        if (detectedtype == -1L)
+          detectedtype = 0;
+      }
+      RegCloseKey(hkey);
+    }
+  }
   #endif
 
   #if (CLIENT_OS != OS_MACOSX)
