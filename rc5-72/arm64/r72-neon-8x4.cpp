@@ -17,6 +17,13 @@
 #define NG 8                 /* vector groups (4 keys each) */
 #define NP (4 * NG)          /* 32 keys per block */
 
+/* Full-unroll hint: clang only. MSVC (Windows ARM64) has no equivalent. */
+#if defined(__clang__)
+#define UNROLL_FULL _Pragma("clang loop unroll(full)")
+#else
+#define UNROLL_FULL
+#endif
+
 static inline uint32x4_t VROTL(uint32x4_t x, uint32x4_t s)
 {
   int32x4_t m = vreinterpretq_s32_u32(vandq_u32(s, vdupq_n_u32(31)));
@@ -28,10 +35,12 @@ static inline uint32x4_t VROTL3(uint32x4_t x)
 extern "C" s32 rc5_72_unit_func_neon_8x4(RC5_72UnitWork *w, u32 *iterations, void *)
 {
   uint32x4_t S[NG][26], L[NG][3], A[NG], B[NG];
-  const uint32x4_t lane = {0, 1, 2, 3};
+  /* MSVC types NEON vectors as __n128 unions, so no brace initializer. */
+  static const u32 lane_init[4] = {0, 1, 2, 3};
+  const uint32x4_t lane = vld1q_u32(lane_init);
   u32 kiter = *iterations / NP;
   while (kiter--) {
-    _Pragma("clang loop unroll(full)")
+    UNROLL_FULL
     for (int g = 0; g < NG; g++) {
       L[g][2] = vaddq_u32(vdupq_n_u32(w->L0.hi), vaddq_u32(lane, vdupq_n_u32(4 * g)));
       L[g][1] = vdupq_n_u32(w->L0.mid);
@@ -40,9 +49,9 @@ extern "C" s32 rc5_72_unit_func_neon_8x4(RC5_72UnitWork *w, u32 *iterations, voi
       A[g] = vdupq_n_u32(0); B[g] = vdupq_n_u32(0);
     }
     int i = 0, j = 0;
-    _Pragma("clang loop unroll(full)")
+    UNROLL_FULL
     for (int k = 0; k < 78; k++) {
-      _Pragma("clang loop unroll(full)")
+      UNROLL_FULL
       for (int g = 0; g < NG; g++) {
         uint32x4_t ab = vaddq_u32(A[g], B[g]);
         A[g] = S[g][i] = VROTL3(vaddq_u32(S[g][i], ab));
@@ -52,11 +61,11 @@ extern "C" s32 rc5_72_unit_func_neon_8x4(RC5_72UnitWork *w, u32 *iterations, voi
       if (++i == 26) i = 0;
       if (++j == 3) j = 0;
     }
-    _Pragma("clang loop unroll(full)")
+    UNROLL_FULL
     for (int g = 0; g < NG; g++) {
       uint32x4_t a = vaddq_u32(vdupq_n_u32(w->plain.lo), S[g][0]);
       uint32x4_t b = vaddq_u32(vdupq_n_u32(w->plain.hi), S[g][1]);
-      _Pragma("clang loop unroll(full)")
+      UNROLL_FULL
       for (int r = 1; r <= 12; r++) {
         a = vaddq_u32(VROTL(veorq_u32(a, b), b), S[g][2 * r]);
         b = vaddq_u32(VROTL(veorq_u32(b, a), a), S[g][2 * r + 1]);
