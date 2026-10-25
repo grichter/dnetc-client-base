@@ -30,6 +30,13 @@ nmake /f makefile.vc PROCESSOR_ARCHITECTURE=ARM64
 ```
 
 This produces ARM64 `dnetc.exe`, `dnetc.com`, and `dnetc.scr` in the source
-directory. The harness can load and benchmark the ARM64 cores, but this
-source tree does not include the private networking and work-buffer code
-needed for a production distributed.net client.
+directory. It needs the Visual Studio 2022 ARM64 build tools and a Windows
+SDK with the ARM64 libraries. The harness can load and benchmark the ARM64
+cores, but this source tree does not include the private networking and
+work-buffer code needed for a production distributed.net client.
+
+The RC5-72 cores built with MSVC are ANSI 1/2/4-pipe and NEON 8x4. The
+KS-MONIKA cores are GNU-syntax assembly that `armasm64` cannot build, so
+they are left out: core numbers stay the same as on Linux/macOS, and
+selecting core 3 or 4 runs NEON 8x4. The CPU is identified from the
+`CP 4000` (MIDR_EL1) and `ProcessorNameString` registry values.
