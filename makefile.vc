@@ -9,6 +9,7 @@
 #PROCESSOR_ARCHITECTURE = ATI_STREAM
 #PROCESSOR_ARCHITECTURE = OPENCL32
 #PROCESSOR_ARCHITECTURE = OPENCL64
+#PROCESSOR_ARCHITECTURE = ARM64
 #PROCESSOR_ARCHITECTURE = arm
 
 BASENAME = dnetc
@@ -49,6 +50,11 @@ OPTS_CC_CPU = -D_AMD64_ -GS-
 OPTS_M_PLAT = AMD64
 CHIPSRCPATH = plat/$(PROCESSOR_ARCHITECTURE)
 ZIPSUFFIX = win64-amd64
+!elseif "$(PROCESSOR_ARCHITECTURE)" == "ARM64"
+OPTS_CC_CPU =
+OPTS_M_PLAT = ARM64
+CHIPSRCPATH = plat
+ZIPSUFFIX = win64-arm64
 !elseif "$(PROCESSOR_ARCHITECTURE)" == "cuda"
 # This assumes 32-bit Windows since there's no advantage to using 64-bit
 HAVE_OGR_CORES = 0
@@ -376,6 +382,8 @@ CHIP_OBJS = $(OUTPUTPATH)/x86cpuid.obj       \
             $(OUTPUTPATH)/x86id.obj          \
             $(OUTPUTPATH)/x86rdtsc.obj       \
             $(OUTPUTPATH)/x86htcount.obj
+!elseif "$(PROCESSOR_ARCHITECTURE)" == "ARM64"
+CHIP_OBJS =
 !elseif "$(PROCESSOR_ARCHITECTURE)" == "cuda"
 CHIP_OBJS = $(OUTPUTPATH)/cuda_setup.obj     \
             $(OUTPUTPATH)/cuda_info.obj
@@ -420,6 +428,13 @@ RC5_72_OBJS =                        \
         $(OUTPUTPATH)/r72-ma4.obj    \
         $(OUTPUTPATH)/r72-avx2-32.obj \
         $(OUTPUTPATH)/r72-mmx.obj
+OPTS_MSVC = $(OPTS_MSVC) -DHAVE_RC5_72_CORES
+!elseif "$(PROCESSOR_ARCHITECTURE)" == "ARM64"
+RC5_72_OBJS = \
+        $(OUTPUTPATH)/r72ansi1.obj \
+        $(OUTPUTPATH)/r72ansi2.obj \
+        $(OUTPUTPATH)/r72ansi4.obj \
+        $(OUTPUTPATH)/r72-neon-8x4.obj
 OPTS_MSVC = $(OPTS_MSVC) -DHAVE_RC5_72_CORES
 !elseif "$(PROCESSOR_ARCHITECTURE)" == "cuda"
 RC5_72_OBJS =                             \
@@ -673,6 +688,11 @@ $(VC_CHECK):
 {$(RC572SRCPATH)/arm}.asm{$(OUTPUTPATH)}.obj:
         armasm -o $(@:/=\) -coff_thumb2_only $(**:/=\)
 
+!elseif "$(PROCESSOR_ARCHITECTURE)" == "ARM64"
+
+{$(RC572SRCPATH)/arm64}.cpp{$(OUTPUTPATH)}.obj::
+        cl -c -O2 $(OPTS_MSVC) -Fo$(OUTPUTPATH)\ $<
+
 !endif
 
 {$(RC572SRCPATH)}.cpp{$(OUTPUTPATH)}.obj::
@@ -743,4 +763,3 @@ makezip: $(BASENAME).exe $(BASENAME).com $(BASENAME).scr $(ZIPEXTRAS)
 	zip -jr dnetcXXX-win32-x86.zip tmpzipdir
 	-rd /s /q tmpzipdir
 	FOR /F "usebackq tokens=3" %i IN (`findstr /r /c:"#define CLIENT_BUILD_FRAC[^_]" common\version.h`) DO move /y dnetcXXX-win32-x86.zip dnetc%i$(BUILDNUM_APPEND)-$(ZIPSUFFIX).zip
-
