@@ -1485,21 +1485,76 @@ long __GetRawProcessorID(const char **cpuname, int whattoret = 0 )
         { 0x00061C0, 0xFFFFFF0, CPU_F_I686, 0x14, "Atom" },  /* (#4080,#4668) */
         { 0x00061E0, 0xFFFFFF0, CPU_F_I686, 0x15, "Core i5/i7" },  /* (#4271) */
         { 0x0006250, 0xFFFFFF0, CPU_F_I686, 0x15, "Core i3/i5/i7" },  /* (#4376,#4224) */
+        { 0x0006260, 0xFFFFFF0, CPU_F_I686, 0xFF, "Atom (Bonnell)" },
+        { 0x0006270, 0xFFFFFF0, CPU_F_I686, 0xFF, "Atom (Saltwell)" },
         { 0x00062A0, 0xFFFFFF0, CPU_F_I686, 0x19, "Core iX-2xxx (Sandy Bridge)" },
         { 0x00062C0, 0xFFFFFF0, CPU_F_I686, 0x15, "Xeon 56xx" },  /* (#4301) */
         { 0x00062D0, 0xFFFFFF0, CPU_F_I686, 0x19, "Core i7-2xxx/3xxx EE" },  /* (#4456) */
+        { 0x0006350, 0xFFFFFF0, CPU_F_I686, 0xFF, "Atom (Saltwell)" },
+        { 0x0006360, 0xFFFFFF0, CPU_F_I686, 0xFF, "Atom (Saltwell)" },
+        { 0x0006370, 0xFFFFFF0, CPU_F_I686, 0xFF, "Atom (Silvermont)" },
         { 0x00063A0, 0xFFFFFF0, CPU_F_I686, 0x1A, "Core iX-3xxx (Ivy Bridge)" },  /* (#4514) */
         { 0x00063C0, 0xFFFFFF0, CPU_F_I686, 0x1B, "Core iX-4xxx (Haswell)" },  /* (#4533) */
+        { 0x00063D0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core iX-5xxx (Broadwell)" },
         { 0x00063E0, 0xFFFFFF0, CPU_F_I686, 0x1B, "Xeon E7 v2 (Ivy Bridge EX)" },  /* (#4578) */
         { 0x00063F0, 0xFFFFFF0, CPU_F_I686, 0x1B, "Xeon Ex v3 (Haswell EX)" },  /* (#4626,#4627) */
         { 0x0006450, 0xFFFFFF0, CPU_F_I686, 0x1B, "Core iX-4xxx (Haswell)" },  /* (#4579) */
         { 0x0006460, 0xFFFFFF0, CPU_F_I686, 0x1B, "Core iX-4xxx (Haswell)" },
+        { 0x0006470, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core iX-5xxx (Broadwell)" },
+        { 0x00064A0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Atom (Silvermont)" },
+        { 0x00064C0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Atom (Airmont)" },
+        { 0x00064D0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Atom C2xxx (Silvermont)" },
+        { 0x00064E0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core iX-6xxx (Skylake)" },
         { 0x00064F0, 0xFFFFFF0, CPU_F_I686, 0x1B, "Xeon Ex v4 (Broadwell EP)" },
+        { 0x0006550, 0xFFFFFF0, CPU_F_I686, 0xFF, "Xeon Scalable (Skylake/Cascade Lake)" },
+        { 0x0006560, 0xFFFFFF0, CPU_F_I686, 0xFF, "Xeon D (Broadwell DE)" },
         { 0x0006570, 0xFFFFFF0, CPU_F_I686, 0x1C, "Xeon Phi (Knights Landing)" }, /* (#4656) */
+        { 0x00065A0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Atom (Silvermont)" },
         { 0x00065C0, 0xFFFFFF0, CPU_F_I686, 0x14, "Atom/Celeron (Apollo Lake)" }, /* (#4684) */
         { 0x00065E0, 0xFFFFFF0, CPU_F_I686, 0x1B, "Core iX-6xxx (Skylake)" },  /* (#4615) */
+        { 0x00065F0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Atom (Goldmont)" },
+        { 0x0006660, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core iX-8xxx (Cannon Lake)" },
+        { 0x00066A0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Xeon Scalable (Ice Lake)" },
+        { 0x00066C0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Xeon D (Ice Lake)" },
+        { 0x0006750, 0xFFFFFF0, CPU_F_I686, 0xFF, "Atom (Airmont)" },
+        { 0x00067A0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Atom/Celeron (Goldmont Plus)" },
+        { 0x00067D0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core iX-10xxx (Ice Lake)" },
+        { 0x00067E0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core iX-10xxx (Ice Lake)" },
+        { 0x0006850, 0xFFFFFF0, CPU_F_I686, 0xFF, "Xeon Phi (Knights Mill)" },
+        { 0x0006860, 0xFFFFFF0, CPU_F_I686, 0xFF, "Atom (Tremont)" },
+        { 0x00068A0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core (Lakefield)" },
+        { 0x00068C0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core iX-11xxx (Tiger Lake)" },
+        { 0x00068D0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core iX-11xxx (Tiger Lake)" },
         { 0x00068E0, 0xFFFFFF0, CPU_F_I686, 0x1D, "Core iX-7xxx (Kaby Lake)" }, /* (#4699) */
+        { 0x00068F0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Xeon Scalable (Sapphire Rapids)" },
+        { 0x0006960, 0xFFFFFF0, CPU_F_I686, 0xFF, "Atom/Celeron (Tremont)" },
+        { 0x0006970, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core iX-12xxx (Alder Lake)" },
+        { 0x00069A0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core iX-12xxx (Alder Lake)" },
+        { 0x00069C0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Atom/Celeron (Tremont)" },
         { 0x00069E0, 0xFFFFFF0, CPU_F_I686, 0x1D, "Core iX-7xxx (Kaby Lake)" },
+        { 0x0006A50, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core iX-10xxx (Comet Lake)" },
+        { 0x0006A60, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core iX-10xxx (Comet Lake)" },
+        { 0x0006A70, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core iX-11xxx (Rocket Lake)" },
+        { 0x0006AA0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core Ultra (Meteor Lake)" },
+        { 0x0006AC0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core Ultra (Meteor Lake)" },
+        { 0x0006AD0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Xeon 6 (Granite Rapids)" },
+        { 0x0006AE0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Xeon 6 (Granite Rapids)" },
+        { 0x0006AF0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Xeon 6 (Sierra Forest)" },
+        { 0x0006B50, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core Ultra (Arrow Lake)" },
+        { 0x0006B60, 0xFFFFFF0, CPU_F_I686, 0xFF, "Atom (Crestmont)" },
+        { 0x0006B70, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core iX-13xxx (Raptor Lake)" },
+        { 0x0006BA0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core iX-13xxx (Raptor Lake)" },
+        { 0x0006BD0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core Ultra (Lunar Lake)" },
+        { 0x0006BE0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core/Atom (Gracemont)" },
+        { 0x0006BF0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core iX-14xxx (Raptor Lake)" },
+        { 0x0006C50, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core Ultra (Arrow Lake)" },
+        { 0x0006C60, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core Ultra (Arrow Lake)" },
+        { 0x0006CC0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core Ultra (Panther Lake)" },
+        { 0x0006CF0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Xeon (Emerald Rapids)" },
+        { 0x0006D50, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core (Wildcat Lake)" },
+        { 0x0006D70, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core (Bartlett Lake)" },
+        { 0x0006DD0, 0xFFFFFF0, CPU_F_I686, 0xFF, "Xeon 6 (Clearwater Forest)" },
+        { 0x0006E50, 0xFFFFFF0, CPU_F_I686, 0xFF, "Core Ultra (Panther Lake)" },
         { 0x0006F10, 0xFFFFFF0, CPU_F_I686, 0x1B, "Xeon E5 v4 (Broadwell EP)" },
         { 0x0000000,         0,          0,    0, NULL }
       }; internalxref = &intelxref[0];
