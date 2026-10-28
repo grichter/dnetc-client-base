@@ -6,7 +6,12 @@
 ;
 
 %ifdef __NASM_VER__
+%if __NASM_MAJOR__ >= 3
+        ; NASM 3 enforces the CPU level; p4 rejects SSE4.1/LZCNT instructions
+        cpu     ivybridge
+%else
         cpu     p4
+%endif
 %else
         cpu     p4 sse4.1
 %endif
