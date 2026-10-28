@@ -25,6 +25,11 @@ HAVE_OGR_PASS2=0
 HAVE_IPV6=1
 HAVE_ISPC=1
 
+# assembler for the AMD64 target; override with YASM=<full path to yasm exe>
+!ifndef YASM
+YASM = yasm
+!endif
+
 # --------------------------------------------
 
 !ifndef PROCESSOR_ARCHITECTURE
@@ -576,7 +581,7 @@ $(VC_CHECK):
         cl -c -O2 $(OPTS_MSVC) -Fo$(OUTPUTPATH)\ $<
 
 {$(RC572SRCPATH)/amd64}.asm{$(OUTPUTPATH)}.obj:
-        yasm -a x86 -m amd64 -o $(@:/=\) -f win32 -D _WINDOWS -I $(RC572SRCPATH:/=\)\amd64\ $(**:/=\)
+        $(YASM) -a x86 -m amd64 -o $(@:/=\) -f win32 -D _WINDOWS -I $(RC572SRCPATH:/=\)\amd64\ $(**:/=\)
 
 !if $(HAVE_ISPC) != 0
 {$(RC572SRCPATH)/ispc}.cpp{$(OUTPUTPATH)}.obj:
@@ -587,13 +592,13 @@ $(VC_CHECK):
 !endif
 
 {$(OGRSRCPATH)/amd64}.asm{$(OUTPUTPATH)}.obj:
-        yasm -a x86 -m amd64 -o $(@:/=\) -f win32 -D _WINDOWS -I $(OGRSRCPATH:/=\)\amd64\ $(**:/=\)
+        $(YASM) -a x86 -m amd64 -o $(@:/=\) -f win32 -D _WINDOWS -I $(OGRSRCPATH:/=\)\amd64\ $(**:/=\)
 
 {$(OGRSRCPATH)/amd64}.cpp{$(OUTPUTPATH)}.obj::
         cl -c $(OPTS_MSVC) -Ox -Fo$(OUTPUTPATH)\ $<
 
 {$(CHIPSRCPATH)}.asm{$(OUTPUTPATH)}.obj:
-        yasm -a x86 -m amd64 -o $(@:/=\) -f win32 -D _WINDOWS $(**:/=\)
+        $(YASM) -a x86 -m amd64 -o $(@:/=\) -f win32 -D _WINDOWS $(**:/=\)
 
 {plat/x86}.cpp{$(OUTPUTPATH)}.obj::
         cl -c $(OPTS_MSVC) -Ox -Fo$(OUTPUTPATH)\ $<
