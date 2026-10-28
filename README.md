@@ -20,6 +20,31 @@ file suitable for your machine. Some common platforms are:
 * `make-vms.com` (VMS)
 
 
+### Windows x64 and x86 CPU harness
+
+The plain `AMD64` and `x86` targets of `makefile.vc` build with Visual Studio
+2022 Build Tools (tested with MSVC 14.44). `AMD64` assembles with YASM and
+`x86` with NASM; both just need to be found, nothing is installed system-wide.
+`HAVE_ISPC=0` skips the optional ISPC core (`ispc` is not needed otherwise).
+`HAVE_OGR_CORES=1` adds the OGR-NG cores (off by default in the makefile).
+The x86 OGR assembly builds with NASM 3.x (tested with 3.02).
+
+```bat
+rem AMD64: YASM= names the assembler (default: yasm on PATH)
+call vcvarsall.bat x64
+nmake /f makefile.vc PROCESSOR_ARCHITECTURE=AMD64 HAVE_ISPC=0 HAVE_OGR_CORES=1 YASM=<dir>\yasm-1.3.0-win64.exe
+
+rem x86: needs nasm on PATH
+call vcvarsall.bat x86
+set PATH=%PATH%;C:\Program Files\NASM
+nmake /f makefile.vc PROCESSOR_ARCHITECTURE=x86 HAVE_ISPC=0 HAVE_OGR_CORES=1
+```
+
+The program is `dnetc.exe` in the source root. Delete `output` between builds
+of different targets and restore it with `git checkout -- output`. Run the
+result from a scratch folder with `-test` and `-bench rc5-72` (or
+`-bench ogr-ng`); `-bench` times every core in turn, which takes minutes.
+
 ### Windows 64-bit OpenCL benchmark harness
 
 `PROCESSOR_ARCHITECTURE=OPENCL64` (and `OPENCL32`) build the harness with the
